@@ -1,0 +1,75 @@
+{% if all_users %}
+  <div>
+    <div>
+      Registered Users
+    <div>
+    <div>
+      <ul>
+        {% for user in all_users %}
+          <li id={{user.id}}>{{ user.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% else %}
+  <div>
+    No users have been entered yet.
+  </div>
+{% endif %}
+
+
+<script>
+
+  let array = document.querySelectorAll('li')
+  for (i=0; i < array.length; i++){
+    array[i].addEven..
+  }
+
+
+  document.querySelectorAll('li').forEach(function(item, index){
+    item.addEventListener('click', function(event){
+      console.log('name clicked!', event.target.innerHTML)
+      // make a fetch (GET) request to the backend for the city of that user...
+      let user_id = event.target.id
+      console.log('got this user_id from the event object...', user_id)
+      let user_name = event.target.innerHTML
+      console.log('got this user name from the event object...', user_name)
+
+      getCityForUser(user_id)
+        .then(function(city){
+          updateUI(user_name, city)
+        })
+      })
+  })
+
+  async function getCityForUser(user_id){
+    const url = '/demo/lookup_city?id='+ user_id
+    console.log('url is now: ', url)
+
+    let data = await fetch(url, {
+      method: 'GET', 
+      headers: { 
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      }, 
+      // body: JSON.stringify({ 'id': user_id })
+    })
+      .then(function(response){
+        return response.json()
+      })
+      .then(function(body){
+        console.log('parsing body?', body)
+        let data = body
+        console.log('About to return ', data.city)
+        return data.city
+      })
+    // # this next line should not execute until the data var is populated...
+    return data
+  }
+
+  function updateUI(user_name, city){
+    alert(user_name + ' comes from ' + city)
+  }
+
+
+</script>
